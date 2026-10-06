@@ -33,13 +33,17 @@ public class MessageStore {
     }
 
     private void createFile() {
-        try {
-            Document doc = DocumentBuilderFactory
-                    .newInstance()
-                    .newDocumentBuilder()
-                    .newDocument();
 
-            Element root = doc.createElement("messages");
+        try {
+            Document doc =
+                    DocumentBuilderFactory
+                            .newInstance()
+                            .newDocumentBuilder()
+                            .newDocument();
+
+            Element root =
+                    doc.createElement("messages");
+
             doc.appendChild(root);
 
             save(doc);
@@ -54,24 +58,46 @@ public class MessageStore {
             String message) {
 
         try {
-            Document doc = DocumentBuilderFactory
-                    .newInstance()
-                    .newDocumentBuilder()
-                    .parse(file);
+            Document doc =
+                    DocumentBuilderFactory
+                            .newInstance()
+                            .newDocumentBuilder()
+                            .parse(file);
 
-            Element root = doc.getDocumentElement();
+            Element root =
+                    doc.getDocumentElement();
 
-            Element msg = doc.createElement("message");
+            Element msg =
+                    doc.createElement("message");
 
-            addElement(doc, msg, "user", user);
-            addElement(doc, msg, "type", "text");
-            addElement(doc, msg, "text", message);
+            addElement(
+                    doc,
+                    msg,
+                    "user",
+                    user
+            );
+
+            addElement(
+                    doc,
+                    msg,
+                    "type",
+                    "text"
+            );
+
+            addElement(
+                    doc,
+                    msg,
+                    "text",
+                    message
+            );
 
             addElement(
                     doc,
                     msg,
                     "timestamp",
-                    String.valueOf(System.currentTimeMillis())
+                    String.valueOf(
+                            System.currentTimeMillis()
+                    )
             );
 
             root.appendChild(msg);
@@ -91,20 +117,52 @@ public class MessageStore {
             long filesize) {
 
         try {
-            Document doc = DocumentBuilderFactory
-                    .newInstance()
-                    .newDocumentBuilder()
-                    .parse(file);
+            Document doc =
+                    DocumentBuilderFactory
+                            .newInstance()
+                            .newDocumentBuilder()
+                            .parse(file);
 
-            Element root = doc.getDocumentElement();
+            Element root =
+                    doc.getDocumentElement();
 
-            Element msg = doc.createElement("message");
+            Element msg =
+                    doc.createElement("message");
 
-            addElement(doc, msg, "user", user);
-            addElement(doc, msg, "type", type);
-            addElement(doc, msg, "text", "");
-            addElement(doc, msg, "filename", filename);
-            addElement(doc, msg, "filepath", filepath);
+            addElement(
+                    doc,
+                    msg,
+                    "user",
+                    user
+            );
+
+            addElement(
+                    doc,
+                    msg,
+                    "type",
+                    type
+            );
+
+            addElement(
+                    doc,
+                    msg,
+                    "text",
+                    ""
+            );
+
+            addElement(
+                    doc,
+                    msg,
+                    "filename",
+                    filename
+            );
+
+            addElement(
+                    doc,
+                    msg,
+                    "filepath",
+                    filepath
+            );
 
             addElement(
                     doc,
@@ -117,7 +175,9 @@ public class MessageStore {
                     doc,
                     msg,
                     "timestamp",
-                    String.valueOf(System.currentTimeMillis())
+                    String.valueOf(
+                            System.currentTimeMillis()
+                    )
             );
 
             root.appendChild(msg);
@@ -131,16 +191,20 @@ public class MessageStore {
 
     public synchronized List<String[]> getMessages() {
 
-        List<String[]> messages = new ArrayList<>();
+        List<String[]> messages =
+                new ArrayList<>();
 
         try {
-            Document doc = DocumentBuilderFactory
-                    .newInstance()
-                    .newDocumentBuilder()
-                    .parse(file);
+            Document doc =
+                    DocumentBuilderFactory
+                            .newInstance()
+                            .newDocumentBuilder()
+                            .parse(file);
 
             NodeList list =
-                    doc.getElementsByTagName("message");
+                    doc.getElementsByTagName(
+                            "message"
+                    );
 
             for (int i = 0;
                     i < list.getLength();
@@ -150,25 +214,46 @@ public class MessageStore {
                         (Element) list.item(i);
 
                 String user =
-                        getElementText(msg, "user");
+                        getElementText(
+                                msg,
+                                "user"
+                        );
 
                 String type =
-                        getElementText(msg, "type");
+                        getElementText(
+                                msg,
+                                "type"
+                        );
 
                 String text =
-                        getElementText(msg, "text");
+                        getElementText(
+                                msg,
+                                "text"
+                        );
 
                 String filename =
-                        getElementText(msg, "filename");
+                        getElementText(
+                                msg,
+                                "filename"
+                        );
 
                 String filepath =
-                        getElementText(msg, "filepath");
+                        getElementText(
+                                msg,
+                                "filepath"
+                        );
 
                 String filesize =
-                        getElementText(msg, "filesize");
+                        getElementText(
+                                msg,
+                                "filesize"
+                        );
 
                 String timestamp =
-                        getElementText(msg, "timestamp");
+                        getElementText(
+                                msg,
+                                "timestamp"
+                        );
 
                 if (type.isEmpty()) {
                     type = "text";
@@ -208,6 +293,27 @@ public class MessageStore {
         }
 
         return messages;
+    }
+
+    public synchronized void clearMessages() {
+
+        try {
+            Document doc =
+                    DocumentBuilderFactory
+                            .newInstance()
+                            .newDocumentBuilder()
+                            .newDocument();
+
+            Element root =
+                    doc.createElement("messages");
+
+            doc.appendChild(root);
+
+            save(doc);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void addElement(

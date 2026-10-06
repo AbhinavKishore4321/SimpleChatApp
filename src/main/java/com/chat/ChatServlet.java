@@ -55,10 +55,28 @@ public class ChatServlet extends HttpServlet {
             return;
         }
 
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
+        if ("reset".equals(action)) {
 
-        List<String[]> messages = store.getMessages();
+            store.clearMessages();
+
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType(
+                    "text/plain; charset=UTF-8"
+            );
+
+            response.getWriter()
+                    .println("Messages cleared.");
+
+            return;
+        }
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(
+                "text/html; charset=UTF-8"
+        );
+
+        List<String[]> messages =
+                store.getMessages();
 
         request.setAttribute(
                 "messages",
@@ -77,8 +95,11 @@ public class ChatServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        String user = request.getParameter("user");
-        String message = request.getParameter("message");
+        String user =
+                request.getParameter("user");
+
+        String message =
+                request.getParameter("message");
 
         if (user != null && message != null &&
                 !user.trim().isEmpty() &&
@@ -98,6 +119,7 @@ public class ChatServlet extends HttpServlet {
             throws IOException {
 
         response.setCharacterEncoding("UTF-8");
+
         response.setContentType(
                 "application/json; charset=UTF-8"
         );

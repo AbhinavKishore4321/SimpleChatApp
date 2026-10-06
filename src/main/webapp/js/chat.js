@@ -1,11 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const chatForm = document.getElementById("chatForm");
-    const messageInput = document.getElementById("messageInput");
-    const userInput = document.getElementById("userInput");
+    const chatForm =
+        document.getElementById("chatForm");
 
-    const fileInput = document.getElementById("fileInput");
-    const attachButton = document.getElementById("attachButton");
+    const messageInput =
+        document.getElementById("messageInput");
+
+    const userInput =
+        document.getElementById("userInput");
+
+    const fileInput =
+        document.getElementById("fileInput");
+
+    const attachButton =
+        document.getElementById("attachButton");
+
     const removeFileButton =
         document.getElementById("removeFileButton");
 
@@ -37,10 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (savedUsername && userInput) {
 
-        userInput.value = savedUsername;
+        userInput.value =
+            savedUsername;
 
-        userInput.readOnly = true;
-
+        userInput.readOnly =
+            true;
     }
 
 
@@ -50,48 +60,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (attachButton && fileInput) {
 
-        attachButton.addEventListener("click", () => {
+        attachButton.addEventListener(
+            "click",
+            () => {
 
-            fileInput.click();
+                fileInput.click();
 
-        });
-
+            }
+        );
     }
 
 
     if (fileInput) {
 
-        fileInput.addEventListener("change", () => {
+        fileInput.addEventListener(
+            "change",
+            () => {
 
-            const file = fileInput.files[0];
+                const file =
+                    fileInput.files[0];
 
-            if (!file) {
-                return;
+                if (!file) {
+                    return;
+                }
+
+                if (fileName) {
+
+                    fileName.textContent =
+                        file.name;
+                }
+
+                if (fileSize) {
+
+                    fileSize.textContent =
+                        formatFileSize(
+                            file.size
+                        );
+                }
+
+                if (filePreview) {
+
+                    filePreview.style.display =
+                        "flex";
+                }
+
             }
-
-            if (fileName) {
-
-                fileName.textContent =
-                    file.name;
-
-            }
-
-            if (fileSize) {
-
-                fileSize.textContent =
-                    formatFileSize(file.size);
-
-            }
-
-            if (filePreview) {
-
-                filePreview.style.display =
-                    "flex";
-
-            }
-
-        });
-
+        );
     }
 
 
@@ -106,32 +120,31 @@ document.addEventListener("DOMContentLoaded", () => {
             () => {
 
                 if (fileInput) {
-                    fileInput.value = "";
+
+                    fileInput.value =
+                        "";
                 }
 
                 if (filePreview) {
 
                     filePreview.style.display =
                         "none";
-
                 }
 
                 if (fileName) {
 
                     fileName.textContent =
                         "No file selected";
-
                 }
 
                 if (fileSize) {
 
-                    fileSize.textContent = "";
-
+                    fileSize.textContent =
+                        "";
                 }
 
             }
         );
-
     }
 
 
@@ -157,10 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     fileInput.files[0];
 
 
-                /*
-                 * User must provide a name.
-                 */
-
                 if (!user) {
 
                     alert(
@@ -173,20 +182,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                /*
-                 * Save username in browser.
-                 */
-
                 localStorage.setItem(
                     "chatUsername",
                     user
                 );
 
 
-                /*
-                 * If a file is selected,
-                 * upload the file.
-                 */
+                /* =========================
+                   FILE UPLOAD
+                   ========================= */
 
                 if (file) {
 
@@ -199,10 +203,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                /*
-                 * If there is no file,
-                 * send a normal text message.
-                 */
+                /* =========================
+                   TEXT MESSAGE
+                   ========================= */
 
                 if (!message) {
 
@@ -216,13 +219,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                sendButton.disabled = true;
+                sendButton.disabled =
+                    true;
 
                 chatForm.submit();
 
             }
         );
-
     }
 
 
@@ -230,141 +233,161 @@ document.addEventListener("DOMContentLoaded", () => {
        FILE UPLOAD
        ========================= */
 
-    async function uploadFile(
+    function uploadFile(
         user,
         file
     ) {
 
-        const formData =
-            new FormData();
+        return new Promise(
+            (resolve, reject) => {
 
-        formData.append(
-            "user",
-            user
-        );
+                const formData =
+                    new FormData();
 
-        formData.append(
-            "file",
-            file
-        );
-
-
-        /*
-         * XMLHttpRequest is used instead of
-         * fetch because it provides upload
-         * progress information.
-         */
-
-        const xhr =
-            new XMLHttpRequest();
-
-
-        /*
-         * Upload progress
-         */
-
-        xhr.upload.addEventListener(
-            "progress",
-            (event) => {
-
-                if (!event.lengthComputable) {
-                    return;
-                }
-
-                const percentage =
-                    Math.round(
-                        (event.loaded /
-                            event.total) *
-                        100
-                    );
-
-                showUploadProgress(
-                    percentage
+                formData.append(
+                    "user",
+                    user
                 );
 
-            }
-        );
-
-
-        /*
-         * Upload completed
-         */
-
-        xhr.addEventListener(
-            "load",
-            () => {
-
-                if (
-                    xhr.status >= 200 &&
-                    xhr.status < 300
-                ) {
-
-                    showUploadProgress(100);
-
-                    window.location.href =
-                        "chat";
-
-                } else {
-
-                    hideUploadProgress();
-
-                    alert(
-                        "File upload failed."
-                    );
-
-                    enableSendButton();
-
-                }
-
-            }
-        );
-
-
-        /*
-         * Network/server error
-         */
-
-        xhr.addEventListener(
-            "error",
-            () => {
-
-                hideUploadProgress();
-
-                alert(
-                    "Unable to upload the file."
+                formData.append(
+                    "file",
+                    file
                 );
 
-                enableSendButton();
+
+                const xhr =
+                    new XMLHttpRequest();
+
+
+                /* =========================
+                   UPLOAD PROGRESS
+                   ========================= */
+
+                xhr.upload.addEventListener(
+                    "progress",
+                    (event) => {
+
+                        if (!event.lengthComputable) {
+                            return;
+                        }
+
+                        const percentage =
+                            Math.round(
+                                (event.loaded /
+                                    event.total) *
+                                100
+                            );
+
+                        showUploadProgress(
+                            percentage
+                        );
+
+                    }
+                );
+
+
+                /* =========================
+                   UPLOAD COMPLETE
+                   ========================= */
+
+                xhr.addEventListener(
+                    "load",
+                    () => {
+
+                        if (
+                            xhr.status >= 200 &&
+                            xhr.status < 300
+                        ) {
+
+                            showUploadProgress(
+                                100
+                            );
+
+                            window.location.href =
+                                "chat";
+
+                            resolve();
+
+                        } else {
+
+                            hideUploadProgress();
+
+                            alert(
+                                "File upload failed."
+                            );
+
+                            enableSendButton();
+
+                            reject(
+                                new Error(
+                                    "Upload failed"
+                                )
+                            );
+                        }
+
+                    }
+                );
+
+
+                /* =========================
+                   NETWORK ERROR
+                   ========================= */
+
+                xhr.addEventListener(
+                    "error",
+                    () => {
+
+                        hideUploadProgress();
+
+                        alert(
+                            "Unable to upload the file."
+                        );
+
+                        enableSendButton();
+
+                        reject(
+                            new Error(
+                                "Network error"
+                            )
+                        );
+
+                    }
+                );
+
+
+                /* =========================
+                   UPLOAD ABORTED
+                   ========================= */
+
+                xhr.addEventListener(
+                    "abort",
+                    () => {
+
+                        hideUploadProgress();
+
+                        enableSendButton();
+
+                        reject(
+                            new Error(
+                                "Upload aborted"
+                            )
+                        );
+
+                    }
+                );
+
+
+                xhr.open(
+                    "POST",
+                    "upload",
+                    true
+                );
+
+
+                xhr.send(formData);
 
             }
         );
-
-
-        /*
-         * Upload cancelled
-         */
-
-        xhr.addEventListener(
-            "abort",
-            () => {
-
-                hideUploadProgress();
-
-                enableSendButton();
-
-            }
-        );
-
-
-        xhr.open(
-            "POST",
-            "upload",
-            true
-        );
-
-
-        xhr.send(formData);
-
     }
 
 
@@ -419,9 +442,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     progressContainer,
                     chatForm
                 );
-
             }
-
         }
 
 
@@ -444,14 +465,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             progressFill.style.width =
                 percentage + "%";
-
         }
+
 
         if (percentageText) {
 
             percentageText.textContent =
                 percentage + "%";
-
         }
 
     }
@@ -468,9 +488,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             progressContainer.style.display =
                 "none";
-
         }
-
     }
 
 
@@ -484,9 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             sendButton.disabled =
                 false;
-
         }
-
     }
 
 
@@ -510,14 +526,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (chatForm) {
 
                         chatForm.requestSubmit();
-
                     }
-
                 }
 
             }
         );
-
     }
 
 
@@ -542,12 +555,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 localStorage.setItem(
                     "darkMode",
-                    enabled ? "true" : "false"
+                    enabled
+                        ? "true"
+                        : "false"
                 );
 
             }
         );
-
     }
 
 
@@ -559,19 +573,404 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.add(
             "dark-mode"
         );
-
     }
 
 
     /* =========================
-       SCROLL TO LATEST MESSAGE
+       AUTO REFRESH MESSAGES
        ========================= */
 
-    if (messagesContainer) {
+    let lastMessageCount = 0;
+
+
+    async function refreshMessages() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "chat?action=messages",
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+                return;
+            }
+
+
+            const messages =
+                await response.json();
+
+
+            /*
+             * Only update the chat when
+             * the number of messages changes.
+             */
+
+            if (
+                messages.length !==
+                lastMessageCount
+            ) {
+
+                updateMessages(
+                    messages
+                );
+
+                lastMessageCount =
+                    messages.length;
+            }
+
+        } catch (error) {
+
+            console.log(
+                "Message refresh failed:",
+                error
+            );
+
+        }
+    }
+
+
+    /* =========================
+       UPDATE MESSAGE AREA
+       ========================= */
+
+    function updateMessages(
+        messages
+    ) {
+
+        if (!messagesContainer) {
+            return;
+        }
+
+
+        const currentUser =
+            userInput
+                ? userInput.value.trim()
+                : "";
+
+
+        messagesContainer.innerHTML =
+            "";
+
+
+        if (messages.length === 0) {
+
+            return;
+        }
+
+
+        messages.forEach(
+            (message) => {
+
+                const messageElement =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                messageElement.className =
+                    "message " +
+                    (
+                        message.user ===
+                        currentUser
+                            ? "sent"
+                            : "received"
+                    );
+
+
+                const content =
+                    document.createElement(
+                        "div"
+                    );
+
+                content.className =
+                    "message-content";
+
+
+                const user =
+                    document.createElement(
+                        "div"
+                    );
+
+                user.className =
+                    "message-user";
+
+                user.textContent =
+                    message.user;
+
+
+                content.appendChild(
+                    user
+                );
+
+
+                /*
+                 * Text message
+                 */
+
+                if (
+                    message.type ===
+                    "text"
+                ) {
+
+                    const text =
+                        document.createElement(
+                            "div"
+                        );
+
+                    text.className =
+                        "message-text";
+
+                    text.textContent =
+                        message.text;
+
+                    content.appendChild(
+                        text
+                    );
+                }
+
+
+                /*
+                 * Image message
+                 */
+
+                else if (
+                    message.type ===
+                    "image"
+                ) {
+
+                    const image =
+                        document.createElement(
+                            "img"
+                        );
+
+                    image.className =
+                        "chat-image";
+
+                    image.src =
+                        "download?file=" +
+                        encodeURIComponent(
+                            message.filepath
+                        );
+
+                    image.alt =
+                        message.filename;
+
+                    image.loading =
+                        "lazy";
+
+
+                    content.appendChild(
+                        image
+                    );
+
+
+                    const name =
+                        document.createElement(
+                            "div"
+                        );
+
+                    name.className =
+                        "file-name";
+
+                    name.textContent =
+                        message.filename;
+
+                    content.appendChild(
+                        name
+                    );
+                }
+
+
+                /*
+                 * Document/file message
+                 */
+
+                else {
+
+                    const fileCard =
+                        document.createElement(
+                            "div"
+                        );
+
+                    fileCard.className =
+                        "file-card";
+
+
+                    const icon =
+                        document.createElement(
+                            "div"
+                        );
+
+                    icon.className =
+                        "file-icon";
+
+                    icon.textContent =
+                        message.type ===
+                        "document"
+                            ? "📄"
+                            : "📎";
+
+
+                    const details =
+                        document.createElement(
+                            "div"
+                        );
+
+                    details.className =
+                        "file-details";
+
+
+                    const name =
+                        document.createElement(
+                            "div"
+                        );
+
+                    name.className =
+                        "file-name";
+
+                    name.textContent =
+                        message.filename;
+
+
+                    const size =
+                        document.createElement(
+                            "div"
+                        );
+
+                    size.className =
+                        "file-size";
+
+                    size.textContent =
+                        formatFileSize(
+                            Number(
+                                message.filesize
+                            )
+                        );
+
+
+                    details.appendChild(
+                        name
+                    );
+
+                    details.appendChild(
+                        size
+                    );
+
+
+                    const download =
+                        document.createElement(
+                            "a"
+                        );
+
+                    download.className =
+                        "download-button";
+
+                    download.href =
+                        "download?file=" +
+                        encodeURIComponent(
+                            message.filepath
+                        );
+
+                    download.textContent =
+                        "Download";
+
+                    download.target =
+                        "_blank";
+
+
+                    fileCard.appendChild(
+                        icon
+                    );
+
+                    fileCard.appendChild(
+                        details
+                    );
+
+                    fileCard.appendChild(
+                        download
+                    );
+
+
+                    content.appendChild(
+                        fileCard
+                    );
+                }
+
+
+                /*
+                 * Timestamp
+                 */
+
+                const time =
+                    document.createElement(
+                        "div"
+                    );
+
+                time.className =
+                    "message-time";
+
+                time.textContent =
+                    formatTimestamp(
+                        message.timestamp
+                    );
+
+
+                content.appendChild(
+                    time
+                );
+
+
+                messageElement.appendChild(
+                    content
+                );
+
+
+                messagesContainer.appendChild(
+                    messageElement
+                );
+
+            }
+        );
+
 
         messagesContainer.scrollTop =
             messagesContainer.scrollHeight;
+    }
 
+
+    /* =========================
+       FORMAT TIMESTAMP
+       ========================= */
+
+    function formatTimestamp(
+        timestamp
+    ) {
+
+        const time =
+            Number(timestamp);
+
+
+        if (!time) {
+            return "";
+        }
+
+
+        const date =
+            new Date(time);
+
+
+        return date.toLocaleTimeString(
+            [],
+            {
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
     }
 
 
@@ -579,12 +978,16 @@ document.addEventListener("DOMContentLoaded", () => {
        FORMAT FILE SIZE
        ========================= */
 
-    function formatFileSize(bytes) {
+    function formatFileSize(
+        bytes
+    ) {
 
-        if (bytes === 0) {
+        if (
+            !bytes ||
+            bytes === 0
+        ) {
 
             return "0 Bytes";
-
         }
 
 
@@ -607,12 +1010,42 @@ document.addEventListener("DOMContentLoaded", () => {
         return (
             (
                 bytes /
-                Math.pow(1024, index)
+                Math.pow(
+                    1024,
+                    index
+                )
             ).toFixed(2)
             + " "
             + units[index]
         );
+    }
 
+
+    /* =========================
+       INITIAL MESSAGE LOAD
+       ========================= */
+
+    refreshMessages();
+
+
+    /* =========================
+       AUTOMATIC MESSAGE CHECK
+       ========================= */
+
+    setInterval(
+        refreshMessages,
+        3000
+    );
+
+
+    /* =========================
+       INITIAL SCROLL
+       ========================= */
+
+    if (messagesContainer) {
+
+        messagesContainer.scrollTop =
+            messagesContainer.scrollHeight;
     }
 
 });

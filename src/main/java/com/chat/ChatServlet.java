@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet("/chat")
@@ -45,6 +46,15 @@ public class ChatServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
+        String action = request.getParameter("action");
+
+        if ("messages".equals(action)) {
+
+            sendMessagesAsJson(response);
+
+            return;
+        }
+
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
@@ -81,5 +91,97 @@ public class ChatServlet extends HttpServlet {
         }
 
         response.sendRedirect("chat");
+    }
+
+    private void sendMessagesAsJson(
+            HttpServletResponse response)
+            throws IOException {
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(
+                "application/json; charset=UTF-8"
+        );
+
+        List<String[]> messages =
+                store.getMessages();
+
+        PrintWriter out =
+                response.getWriter();
+
+        out.print("[");
+
+        for (int i = 0;
+                i < messages.size();
+                i++) {
+
+            String[] message =
+                    messages.get(i);
+
+            if (i > 0) {
+                out.print(",");
+            }
+
+            out.print("{");
+
+            out.print(
+                    "\"user\":\"" +
+                    escapeJson(message[0]) +
+                    "\","
+            );
+
+            out.print(
+                    "\"type\":\"" +
+                    escapeJson(message[1]) +
+                    "\","
+            );
+
+            out.print(
+                    "\"text\":\"" +
+                    escapeJson(message[2]) +
+                    "\","
+            );
+
+            out.print(
+                    "\"filename\":\"" +
+                    escapeJson(message[3]) +
+                    "\","
+            );
+
+            out.print(
+                    "\"filepath\":\"" +
+                    escapeJson(message[4]) +
+                    "\","
+            );
+
+            out.print(
+                    "\"filesize\":\"" +
+                    escapeJson(message[5]) +
+                    "\","
+            );
+
+            out.print(
+                    "\"timestamp\":\"" +
+                    escapeJson(message[6]) +
+                    "\""
+            );
+
+            out.print("}");
+        }
+
+        out.print("]");
+    }
+
+    private String escapeJson(String value) {
+
+        if (value == null) {
+            return "";
+        }
+
+        return value
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\r", "\\r")
+                .replace("\n", "\\n")
+                .replace("\t", "\\t");
     }
 }

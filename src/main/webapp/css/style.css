@@ -10,6 +10,10 @@ body {
     height: 100%;
 }
 
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
 body {
     font-family:
         "Segoe UI",
@@ -20,6 +24,8 @@ body {
     color: #18344f;
 
     height: 100vh;
+    height: 100dvh;
+
     overflow: hidden;
 
     background:
@@ -38,6 +44,8 @@ body {
         );
 
     -webkit-font-smoothing: antialiased;
+
+    overscroll-behavior: none;
 }
 
 /* =========================================================
@@ -49,6 +57,7 @@ body {
 
     width: 100%;
     height: 100vh;
+    height: 100dvh;
 
     padding: 18px;
 
@@ -376,6 +385,7 @@ body {
     flex: 1;
 
     min-width: 0;
+    min-height: 0;
 
     height: 100%;
 
@@ -410,6 +420,7 @@ body {
    ========================================================= */
 
 .chat-header {
+    min-height: 70px;
     height: 70px;
 
     display: flex;
@@ -443,6 +454,8 @@ body {
     align-items: center;
 
     gap: 11px;
+
+    min-width: 0;
 }
 
 .chat-header h3 {
@@ -454,6 +467,12 @@ body {
 
     text-shadow:
         0 1px 0 #ffffff;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
 .chat-header-status {
@@ -468,6 +487,8 @@ body {
     display: flex;
 
     gap: 5px;
+
+    flex-shrink: 0;
 }
 
 .header-button {
@@ -503,6 +524,8 @@ body {
     transition:
         background 0.15s,
         box-shadow 0.15s;
+
+    touch-action: manipulation;
 }
 
 .header-button:hover {
@@ -539,9 +562,12 @@ body {
 .messages-container {
     flex: 1;
 
+    min-height: 0;
+
     padding: 24px 28px;
 
     overflow-y: auto;
+    overflow-x: hidden;
 
     display: flex;
 
@@ -555,6 +581,10 @@ body {
             rgba(255, 255, 255, 0.72),
             transparent 42%
         );
+
+    overscroll-behavior: contain;
+
+    -webkit-overflow-scrolling: touch;
 }
 
 .messages-container::-webkit-scrollbar {
@@ -619,6 +649,8 @@ body {
     padding: 10px 14px;
 
     min-width: 60px;
+
+    max-width: 100%;
 
     border-radius: 8px;
 
@@ -719,6 +751,8 @@ body {
 
     padding: 9px;
 
+    max-width: 100%;
+
     border-radius: 6px;
 
     background:
@@ -805,6 +839,11 @@ body {
 
     flex-shrink: 0;
 
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
     border: 1px solid rgba(70, 125, 165, 0.35);
 
     border-radius: 4px;
@@ -821,6 +860,8 @@ body {
     cursor: pointer;
 
     font-size: 16px;
+
+    text-decoration: none;
 
     box-shadow:
         inset 0 1px 0 #ffffff,
@@ -849,10 +890,13 @@ body {
 .chat-image {
     display: block;
 
+    width: auto;
+    height: auto;
+
     max-width: 320px;
     max-height: 320px;
 
-    object-fit: cover;
+    object-fit: contain;
 
     border-radius: 6px;
 
@@ -896,6 +940,9 @@ body {
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.9),
         0 -2px 5px rgba(0, 55, 100, 0.08);
+
+    padding-bottom:
+        max(15px, env(safe-area-inset-bottom));
 }
 
 /* =========================================================
@@ -912,6 +959,8 @@ body {
     align-items: center;
 
     justify-content: space-between;
+
+    gap: 10px;
 
     border-radius: 5px;
 
@@ -941,11 +990,15 @@ body {
     gap: 9px;
 
     min-width: 0;
+
+    flex: 1;
 }
 
 .remove-file {
     width: 29px;
     height: 28px;
+
+    flex-shrink: 0;
 
     border: 1px solid rgba(100, 145, 175, 0.35);
 
@@ -967,6 +1020,8 @@ body {
     box-shadow:
         inset 0 1px 0 #ffffff,
         0 1px 2px rgba(0, 50, 90, 0.12);
+
+    touch-action: manipulation;
 }
 
 .remove-file:hover {
@@ -990,6 +1045,8 @@ body {
     align-items: center;
 
     gap: 7px;
+
+    width: 100%;
 }
 
 /* =========================================================
@@ -1029,6 +1086,10 @@ body {
     transition:
         box-shadow 0.15s,
         background 0.15s;
+
+    touch-action: manipulation;
+
+    -webkit-tap-highlight-color: transparent;
 }
 
 .attach-button:hover,
@@ -1068,6 +1129,8 @@ body {
     flex: 1;
 
     min-width: 0;
+
+    width: 100%;
 
     height: 40px;
 
@@ -1128,6 +1191,8 @@ body {
 
     padding: 0 17px;
 
+    flex-shrink: 0;
+
     border: 1px solid #286a9d;
 
     border-radius: 5px;
@@ -1165,6 +1230,8 @@ body {
     transition:
         background 0.15s,
         box-shadow 0.15s;
+
+    touch-action: manipulation;
 }
 
 .send-button:hover {
@@ -1209,6 +1276,10 @@ body {
    ========================================================= */
 
 #userInput {
+    width: 100%;
+
+    min-width: 0;
+
     border: 1px solid rgba(80, 130, 165, 0.5);
 
     border-radius: 5px;
@@ -1238,6 +1309,8 @@ body {
     transition:
         border-color 0.15s,
         box-shadow 0.15s;
+
+    font-size: 14px;
 }
 
 #userInput:focus {
@@ -1624,13 +1697,15 @@ body.dark-mode .upload-progress-bar {
 }
 
 /* =========================================================
-   RESPONSIVE DESIGN
+   TABLET
    ========================================================= */
 
 @media (max-width: 900px) {
 
     .chat-app {
         padding: 10px;
+
+        gap: 10px;
     }
 
     .sidebar {
@@ -1644,12 +1719,40 @@ body.dark-mode .upload-progress-bar {
     .messages-container {
         padding: 20px;
     }
+
+    .input-area {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
 }
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media (max-width: 700px) {
 
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+
+        overflow: hidden;
+    }
+
+    body {
+        height: 100vh;
+        height: 100dvh;
+    }
+
     .chat-app {
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+
         padding: 0;
+
+        display: block;
     }
 
     .sidebar {
@@ -1657,69 +1760,440 @@ body.dark-mode .upload-progress-bar {
     }
 
     .chat-container {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+
         border-radius: 0;
 
         border: none;
+
+        box-shadow: none;
+
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .chat-header {
+        min-height: 58px;
+        height: 58px;
+
+        padding:
+            0
+            10px
+            0
+            max(10px, env(safe-area-inset-left));
+
+        padding-right:
+            max(10px, env(safe-area-inset-right));
+    }
+
+    .chat-header-left {
+        gap: 7px;
+
+        min-width: 0;
+    }
+
+    .chat-header h3 {
+        font-size: 15px;
+
+        max-width: 150px;
+    }
+
+    .chat-header-status {
+        font-size: 10px;
+
+        margin-top: 2px;
+    }
+
+    .header-actions {
+        gap: 4px;
+    }
+
+    .header-button {
+        width: 34px;
+        height: 32px;
+
+        font-size: 16px;
+    }
+
+    .messages-container {
+        min-height: 0;
+
+        padding:
+            12px
+            max(10px, env(safe-area-inset-right))
+            12px
+            max(10px, env(safe-area-inset-left));
+
+        gap: 9px;
+
+        -webkit-overflow-scrolling: touch;
     }
 
     .message {
         max-width: 88%;
     }
 
-    .chat-header {
-        height: 62px;
-
-        padding: 0 14px;
-    }
-
-    .chat-header h3 {
-        font-size: 16px;
-    }
-
-    .messages-container {
-        padding: 17px 13px;
-    }
-
-    .input-area {
-        padding: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-
-    .message {
-        max-width: 94%;
-    }
-
     .message-content {
-        padding: 9px 12px;
+        padding: 8px 11px;
+
+        border-radius: 8px;
     }
 
-    .file-message {
-        min-width: 210px;
+    .message-text {
+        font-size: 14px;
 
-        max-width: 280px;
+        line-height: 1.45;
+    }
+
+    .message-user {
+        font-size: 10px;
+
+        margin-bottom: 3px;
+    }
+
+    .message-time {
+        font-size: 9px;
+
+        margin-top: 4px;
     }
 
     .chat-image {
-        max-width: 250px;
+        width: auto;
+        height: auto;
 
-        max-height: 250px;
+        max-width: min(280px, 72vw);
+        max-height: 280px;
+    }
+
+    .file-message {
+        min-width: 0;
+
+        max-width: 100%;
+    }
+
+    .file-card {
+        width: 100%;
+
+        gap: 8px;
+
+        padding: 8px;
+    }
+
+    .file-icon {
+        width: 38px;
+        height: 38px;
+
+        font-size: 18px;
+    }
+
+    .file-name {
+        font-size: 12px;
+    }
+
+    .file-size {
+        font-size: 10px;
+    }
+
+    .download-button {
+        width: 32px;
+        height: 32px;
+    }
+
+    .input-area {
+        width: 100%;
+
+        padding:
+            8px
+            max(8px, env(safe-area-inset-right))
+            max(10px, env(safe-area-inset-bottom))
+            max(8px, env(safe-area-inset-left));
+    }
+
+    .file-preview {
+        margin-bottom: 7px;
+
+        padding: 7px 8px;
+    }
+
+    .message-input-container {
+        gap: 5px;
+    }
+
+    .attach-button,
+    .emoji-button {
+        width: 38px;
+        height: 38px;
+
+        font-size: 17px;
+    }
+
+    .message-input {
+        height: 38px;
+
+        padding: 0 10px;
+
+        font-size: 16px;
     }
 
     .send-button {
-        min-width: 42px;
+        height: 38px;
 
-        width: 42px;
+        min-width: 58px;
+
+        padding: 0 10px;
+
+        font-size: 12px;
+    }
+
+    #userInput {
+        font-size: 16px;
+    }
+
+    .empty-chat {
+        padding: 20px;
+    }
+
+    .empty-chat-icon {
+        font-size: 42px;
+    }
+
+    .empty-chat h2 {
+        font-size: 18px;
+    }
+
+    .empty-chat p {
+        font-size: 12px;
+    }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .chat-header {
+        min-height: 54px;
+        height: 54px;
+    }
+
+    .chat-header h3 {
+        font-size: 14px;
+
+        max-width: 125px;
+    }
+
+    .chat-header-status {
+        font-size: 9px;
+    }
+
+    .header-button {
+        width: 31px;
+        height: 29px;
+
+        font-size: 14px;
+    }
+
+    .messages-container {
+        padding:
+            10px
+            8px
+            10px
+            8px;
+    }
+
+    .message {
+        max-width: 93%;
+    }
+
+    .message-content {
+        padding: 7px 10px;
+    }
+
+    .message-text {
+        font-size: 14px;
+    }
+
+    .chat-image {
+        max-width: 76vw;
+
+        max-height: 240px;
+    }
+
+    .file-card {
+        gap: 6px;
+
+        padding: 7px;
+    }
+
+    .file-icon {
+        width: 34px;
+        height: 34px;
+
+        font-size: 16px;
+    }
+
+    .download-button {
+        width: 30px;
+        height: 30px;
+    }
+
+    .input-area {
+        padding:
+            7px
+            7px
+            max(8px, env(safe-area-inset-bottom))
+            7px;
+    }
+
+    .message-input-container {
+        gap: 4px;
+    }
+
+    .attach-button,
+    .emoji-button {
+        width: 35px;
+        height: 35px;
+
+        font-size: 16px;
+    }
+
+    .message-input {
+        height: 35px;
+
+        padding: 0 9px;
+
+        font-size: 16px;
+    }
+
+    .send-button {
+        height: 35px;
+
+        min-width: 38px;
+
+        width: 38px;
 
         padding: 0;
 
         font-size: 0;
     }
 
-    .header-button {
-        width: 33px;
+    .send-button::after {
+        content: "➤";
 
-        height: 30px;
+        font-size: 15px;
+    }
+
+    .file-preview {
+        margin-bottom: 6px;
+    }
+
+    .remove-file {
+        width: 27px;
+        height: 27px;
+    }
+}
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+    .chat-header h3 {
+        max-width: 105px;
+    }
+
+    .header-button {
+        width: 29px;
+        height: 28px;
+    }
+
+    .messages-container {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    .message {
+        max-width: 96%;
+    }
+
+    .attach-button,
+    .emoji-button {
+        width: 33px;
+        height: 33px;
+    }
+
+    .message-input {
+        height: 33px;
+
+        padding: 0 8px;
+    }
+
+    .send-button {
+        height: 33px;
+
+        width: 35px;
+        min-width: 35px;
+    }
+}
+
+/* =========================================================
+   LANDSCAPE MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) and (orientation: landscape) {
+
+    .chat-header {
+        min-height: 50px;
+        height: 50px;
+    }
+
+    .messages-container {
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .input-area {
+        padding-top: 6px;
+        padding-bottom:
+            max(6px, env(safe-area-inset-bottom));
+    }
+
+    .message {
+        max-width: 75%;
+    }
+}
+
+/* =========================================================
+   TOUCH DEVICES
+   ========================================================= */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .header-button,
+    .attach-button,
+    .emoji-button,
+    .send-button,
+    .remove-file,
+    .download-button {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .header-button:hover,
+    .attach-button:hover,
+    .emoji-button:hover,
+    .send-button:hover,
+    .remove-file:hover,
+    .download-button:hover {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.8),
+            0 1px 3px rgba(0, 55, 100, 0.18);
+    }
+
+    .chat-image:hover {
+        transform: none;
     }
 }

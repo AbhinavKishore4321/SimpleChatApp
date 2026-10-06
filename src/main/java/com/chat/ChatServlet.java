@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -17,10 +18,25 @@ public class ChatServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
 
-        String path = getServletContext()
-                .getRealPath("/WEB-INF/messages.xml");
+        String dataDirectory = System.getenv("CHAT_DATA_DIR");
 
-        store = new MessageStore(path);
+        if (dataDirectory == null || dataDirectory.trim().isEmpty()) {
+            dataDirectory =
+                    System.getProperty("user.home")
+                    + File.separator
+                    + "SimpleChatAppData";
+        }
+
+        File dataDir = new File(dataDirectory);
+
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
+
+        String messagePath =
+                new File(dataDir, "messages.xml").getAbsolutePath();
+
+        store = new MessageStore(messagePath);
     }
 
     @Override
@@ -29,9 +45,15 @@ public class ChatServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+
         List<String[]> messages = store.getMessages();
 
-        request.setAttribute("messages", messages);
+        request.setAttribute(
+                "messages",
+                messages
+        );
 
         request.getRequestDispatcher("index.jsp")
                 .forward(request, response);
@@ -42,6 +64,8 @@ public class ChatServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
+
+        request.setCharacterEncoding("UTF-8");
 
         String user = request.getParameter("user");
         String message = request.getParameter("message");

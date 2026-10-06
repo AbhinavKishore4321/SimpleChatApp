@@ -21,6 +21,12 @@ public class MessageStore {
     public MessageStore(String path) {
         file = new File(path);
 
+        File parent = file.getParentFile();
+
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+        }
+
         if (!file.exists()) {
             createFile();
         }
@@ -43,7 +49,9 @@ public class MessageStore {
         }
     }
 
-    public synchronized void addMessage(String user, String message) {
+    public synchronized void addMessage(
+            String user,
+            String message) {
 
         try {
             Document doc = DocumentBuilderFactory
@@ -55,14 +63,62 @@ public class MessageStore {
 
             Element msg = doc.createElement("message");
 
-            Element userElement = doc.createElement("user");
-            userElement.setTextContent(user);
+            addElement(doc, msg, "user", user);
+            addElement(doc, msg, "type", "text");
+            addElement(doc, msg, "text", message);
 
-            Element textElement = doc.createElement("text");
-            textElement.setTextContent(message);
+            addElement(
+                    doc,
+                    msg,
+                    "timestamp",
+                    String.valueOf(System.currentTimeMillis())
+            );
 
-            msg.appendChild(userElement);
-            msg.appendChild(textElement);
+            root.appendChild(msg);
+
+            save(doc);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void addFileMessage(
+            String user,
+            String type,
+            String filename,
+            String filepath,
+            long filesize) {
+
+        try {
+            Document doc = DocumentBuilderFactory
+                    .newInstance()
+                    .newDocumentBuilder()
+                    .parse(file);
+
+            Element root = doc.getDocumentElement();
+
+            Element msg = doc.createElement("message");
+
+            addElement(doc, msg, "user", user);
+            addElement(doc, msg, "type", type);
+            addElement(doc, msg, "text", "");
+            addElement(doc, msg, "filename", filename);
+            addElement(doc, msg, "filepath", filepath);
+
+            addElement(
+                    doc,
+                    msg,
+                    "filesize",
+                    String.valueOf(filesize)
+            );
+
+            addElement(
+                    doc,
+                    msg,
+                    "timestamp",
+                    String.valueOf(System.currentTimeMillis())
+            );
 
             root.appendChild(msg);
 
@@ -83,23 +139,68 @@ public class MessageStore {
                     .newDocumentBuilder()
                     .parse(file);
 
-            NodeList list = doc.getElementsByTagName("message");
+            NodeList list =
+                    doc.getElementsByTagName("message");
 
-            for (int i = 0; i < list.getLength(); i++) {
+            for (int i = 0;
+                    i < list.getLength();
+                    i++) {
 
-                Element msg = (Element) list.item(i);
+                Element msg =
+                        (Element) list.item(i);
 
-                String user = msg
-                        .getElementsByTagName("user")
-                        .item(0)
-                        .getTextContent();
+                String user =
+                        getElementText(msg, "user");
 
-                String text = msg
-                        .getElementsByTagName("text")
-                        .item(0)
-                        .getTextContent();
+                String type =
+                        getElementText(msg, "type");
 
-                messages.add(new String[]{user, text});
+                String text =
+                        getElementText(msg, "text");
+
+                String filename =
+                        getElementText(msg, "filename");
+
+                String filepath =
+                        getElementText(msg, "filepath");
+
+                String filesize =
+                        getElementText(msg, "filesize");
+
+                String timestamp =
+                        getElementText(msg, "timestamp");
+
+                if (type.isEmpty()) {
+                    type = "text";
+                }
+
+                if (filename.isEmpty()) {
+                    filename = "";
+                }
+
+                if (filepath.isEmpty()) {
+                    filepath = "";
+                }
+
+                if (filesize.isEmpty()) {
+                    filesize = "0";
+                }
+
+                if (timestamp.isEmpty()) {
+                    timestamp = "0";
+                }
+
+                messages.add(
+                        new String[]{
+                                user,
+                                type,
+                                text,
+                                filename,
+                                filepath,
+                                filesize,
+                                timestamp
+                        }
+                );
             }
 
         } catch (Exception e) {
@@ -109,14 +210,49 @@ public class MessageStore {
         return messages;
     }
 
-    private void save(Document doc) throws Exception {
+    private void addElement(
+            Document doc,
+            Element parent,
+            String name,
+            String value) {
 
-        TransformerFactory factory = TransformerFactory.newInstance();
+        Element element =
+                doc.createElement(name);
 
-        var transformer = factory.newTransformer();
+        element.setTextContent(
+                value == null ? "" : value
+        );
+
+        parent.appendChild(element);
+    }
+
+    private String getElementText(
+            Element parent,
+            String name) {
+
+        NodeList nodes =
+                parent.getElementsByTagName(name);
+
+        if (nodes.getLength() == 0) {
+            return "";
+        }
+
+        return nodes.item(0)
+                .getTextContent();
+    }
+
+    private void save(Document doc)
+            throws Exception {
+
+        TransformerFactory factory =
+                TransformerFactory.newInstance();
+
+        var transformer =
+                factory.newTransformer();
 
         transformer.setOutputProperty(
-                OutputKeys.INDENT, "yes"
+                OutputKeys.INDENT,
+                "yes"
         );
 
         transformer.transform(

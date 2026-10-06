@@ -1,1 +1,12 @@
-target/ 
+# Maven build files
+target/
+
+# Uploaded files
+uploads/images/*
+uploads/documents/*
+uploads/other/*
+
+# Keep upload folders in Git
+!uploads/images/.gitkeep
+!uploads/documents/.gitkeep
+!uploads/other/.gitkeep
